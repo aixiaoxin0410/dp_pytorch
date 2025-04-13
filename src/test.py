@@ -32,7 +32,7 @@ class Nn_net(nn.Module):
 
 model = Nn_net()
 model.load_state_dict(torch.load("../src/nn_net_0.pth"))
-# print(model)
+print(model)
 
 image = torch.reshape(image,(1,3,32,32))
 model.eval()
