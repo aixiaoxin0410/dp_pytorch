@@ -1,4 +1,5 @@
 # 步骤 1：准备环境
+# ----------------------------------------
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -12,6 +13,7 @@ import numpy as np
 from torch.optim.lr_scheduler import StepLR
 
 # 步骤 2：定义数据集类
+# ----------------------------------------
 class ImageDataset(Dataset):
     def __init__(self, txt_file, image_dir, transform=None, has_labels=True):
         if not os.path.exists(txt_file):
@@ -88,6 +90,7 @@ class ImageDataset(Dataset):
             return image, self.data.iloc[idx]['filename']
 
 # 步骤 3：加载和预处理数据
+# ----------------------------------------
 base_path = "../spring_camp_intelligent_knights/data/"
 
 if not os.path.exists(base_path):
@@ -182,6 +185,7 @@ print(f"验证数据集大小：{len(val_indices)} 张图片")
 print(f"测试数据集大小：{len(a_dataset)} 张图片")
 
 # 步骤 4：构建和训练模型
+# ----------------------------------------
 model = models.resnet18(weights=ResNet18_Weights.IMAGENET1K_V1)
 num_ftrs = model.fc.in_features
 model.fc = nn.Linear(num_ftrs, 5)
@@ -261,6 +265,7 @@ model.load_state_dict(torch.load(best_model_path))
 print(f"加载最佳模型，验证准确率：{best_val_acc:.2f}%")
 
 # 步骤 5：对测试数据进行预测
+# ----------------------------------------
 model.eval()
 predictions = []
 with torch.no_grad():
@@ -283,6 +288,7 @@ with torch.no_grad():
             predictions.append((filename, label))
 
 # 步骤 6：保存预测结果
+# ----------------------------------------
 output_file = os.path.join(base_path, "predictions.txt")
 with open(output_file, "w", encoding="utf-8", newline="\n") as f:
     for filename, label in predictions:
