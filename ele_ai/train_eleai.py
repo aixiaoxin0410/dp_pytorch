@@ -3,6 +3,7 @@
 # -----------------------------------------------
 # -----------------------------------------------
 # 导入需要的库
+import logging
 import os.path
 import pandas as pd
 import torch
@@ -183,7 +184,7 @@ print(f"测试数据集大小：{len(a_dataset)}张图片")
 # -----------------------------------------------
 # 加载预训练的 ResNet-18模型
 model = models.resnet18(weights=ResNet18_Weights.IMAGENET1K_V1)
-# 修改最后一层，适用5个类型
+# 修改最后一层，适用5个类型（迁移学习）
 num_ftrs = model.fc.in_features
 model.fc = nn.Linear(num_ftrs,5)
 
@@ -193,7 +194,8 @@ model = model.to(device)
 
 # 定义损失函数和优化器
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(),lr=0.001)
+learning_rate = 0.001
+optimizer = optim.Adam(model.parameters(),lr=learning_rate)
 
 # 训练模型
 num_epochs = 5
@@ -207,7 +209,7 @@ for epoch in range(num_epochs):
             continue
         # 将图片和标签转换为张量并移动到设备上
         images = torch.stack(images).to(device)
-        labels = torch.tenor(labels).to(device)
+        labels = torch.tensor(labels).to(device)
         # 清零梯度
         optimizer.zero_grad()
         # 前向传播
@@ -261,7 +263,11 @@ with torch.no_grad(): # 不计算梯度
 # -----------------------------------------------
 # -----------------------------------------------
 # 保存文件路径
-output_file = os.path.join(base_path,"predictions.txt")
+# output_file = os.path.join(base_path,"predictions.txt")
+output_file = "predictions.txt"
+# 检查文件是否存在
+if os.path.exists(output_file):
+    logging.warning(f"文件 {output_file} 已存在，将被覆盖")
 # 打开文件，使用UTF-8编码
 with open(output_file,"w",encoding="utf-8",newline="\n") as f:
     for filename,label in predictions:
