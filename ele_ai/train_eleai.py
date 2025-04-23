@@ -289,7 +289,6 @@ with torch.no_grad():
 
 # 步骤 6：保存预测结果
 # ----------------------------------------
-# ----------------------------------------
 output_file = os.path.join(base_path, "predictions.txt")
 with open(output_file, "w", encoding="utf-8", newline="\n") as f:
     for filename, label in predictions:
